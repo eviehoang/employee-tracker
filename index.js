@@ -82,6 +82,7 @@ function viewDept() {
             console.error(err);
         } else {
             console.table(results);
+            
         }
     });
 }
