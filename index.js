@@ -62,12 +62,12 @@ const choices = function () {
     inquirer.prompt(prompts.menu).catch(err => {
         console.log(err);
     }).then(response => {
-        let choice = response.choices;
+        let choice = response.options;
         switch (choice) {
             case "View All Departments":
                 return viewDept();
             case "View All Roles":
-                return console.log('hello');
+                return viewRoles();
                 break;
         }
     })
@@ -78,6 +78,15 @@ const choices = function () {
 
 function viewDept() {
     db.query('SELECT department_name FROM company_db.departments;', function (err, results) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.table(results);
+        }
+    });
+}
+function viewRoles() {
+    db.query('SELECT id, title, salary, FROM company_db.roles;', function (err, results) {
         if (err) {
             console.error(err);
         } else {
