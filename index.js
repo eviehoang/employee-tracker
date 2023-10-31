@@ -17,22 +17,24 @@ const db = mysql.createConnection(
     console.log(`Connected to company_db database.`)
 );
 
+// Menu and Ascii Artwork
+
 function banner() {
     return new Promise((resolve, reject) => {
-      figlet.text("FISH-SEA CO.", {
-        font: "Bubble"
-      }, function (err, data) {
-        if (err) {
-          console.log("Something went wrong...");
-          console.dir(err);
-          reject(err);
-        } else {
-          console.log(data);
-          resolve();
-        }
-      });
+        figlet.text("FISH-SEA CO.", {
+            font: "Bubble"
+        }, function (err, data) {
+            if (err) {
+                console.log("Something went wrong...");
+                console.dir(err);
+                reject(err);
+            } else {
+                console.log(data);
+                resolve();
+            }
+        });
     });
-  }
+}
 
 const sharky =
     `
@@ -55,15 +57,41 @@ function shark() {
 };
 
 
-// Launching Functions
+// Function for choices made
+const choices = function () {
+    inquirer.prompt(prompts.menu).catch(err => {
+        console.log(err);
+    }).then(response => {
+        let choice = response.choices;
+        switch (choice) {
+            case "View All Departments":
+                return viewDept();
+            case "View All Roles":
+                return console.log('hello');
+                break;
+        }
+    })
+        .catch(err => {
+            console.log(err);
+        });
+};
 
+function viewDept() {
+    db.query('SELECT department_name FROM company_db.departments;', function (err, results) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.table(results);
+        }
+    });
+}
+
+// Launching Everything
 async function start() {
     try {
         await banner();
         shark();
-        inquirer.prompt(prompts.menu).catch(err => {
-            console.log(err);
-        });
+        choices();
     } catch (err) {
         console.error('An error occurred:', err);
     }
