@@ -76,22 +76,59 @@ const choices = function () {
         });
 };
 
+
+
+
+// Back to menu option
+function backOpt() {
+    return inquirer.prompt([
+        {
+            type: "list",
+            name: "options",
+            message: "What would you like to do?",
+            choices: [
+                "Back",
+                "Quit"
+            ]
+        }
+    ]);
+}
+
+const back = function () {
+    backOpt()
+    .then(response => {
+        if (response.options === "Back") {
+            choices();
+        } else if (response.options === "Quit") {
+            db.end;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+    });
+};
+
+
+
+
+
 function viewDept() {
     db.query('SELECT department_name FROM company_db.departments;', function (err, results) {
         if (err) {
             console.error(err);
         } else {
             console.table(results);
-            
+            back();
         }
     });
 }
 function viewRoles() {
-    db.query('SELECT id, title, salary, FROM company_db.roles;', function (err, results) {
+    db.query('SELECT id, title, salary, department_id FROM company_db.roles;', function (err, results) {
         if (err) {
             console.error(err);
         } else {
             console.table(results);
+            back();
         }
     });
 }
