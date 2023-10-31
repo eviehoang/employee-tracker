@@ -1,27 +1,26 @@
-DROP DATABASE IF EXISTS employees_db;
-CREATE DATABASE employees_db;
+DROP DATABASE IF EXISTS company_db;
+CREATE DATABASE company_db;
 
-USE employees_db;
+USE company_db;
+
+CREATE TABLE departments (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  departmnent_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE role (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  department_id INT NOT NULL
+);
 
 CREATE TABLE employees (
-  id INT NOT NULL AUTO_INCREMENT,
-  first_name VARCHAR(30),
-  last_name VARCHAR(30),
-  PRIMARY KEY (id)
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  role_id INT NOT NULL,
+  manager_id INT
 );
 
-CREATE TABLE salary (
-  id INT NOT NULL AUTO_INCREMENT,
-  employee_id INT NOT NULL,
-  salary INT NOT NULL,
-  FOREIGN KEY (employee_id)
-  REFERENCES employees(id)
-  ON DELETE SET NULL,
-  PRIMARY KEY (id)
-);
-
-
-INSERT INTO instructors (first_name, last_name)
-VALUES ("Farley", "Wittles"),
-       ("Asher", "Filth Lord"),
-       ("Sage", "Filth Lord");
+SHOW TABLES;
