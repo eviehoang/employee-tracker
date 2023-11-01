@@ -1,7 +1,7 @@
 
 <div align="center">
   
-  ![]()
+  ![](images/sshot.png)
 
   <h3 align="center">EMPLOYEE TRACKER/h3>
 
@@ -60,8 +60,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 Nhi Hoang - [linkedin](https://www.linkedin.com/in/ynhihoang/)
-
 Project Repo: [https://github.com/eviehoang/employee-tracker](https://github.com/eviehoang/employee-tracker)
+Project Video: [google drive](https://drive.google.com/file/d/1uhmmA9l3UdXl2HbCesQdhQ-OLhBCf5Xu/view)
 
 
 <!-- ACKNOWLEDGMENTS -->
