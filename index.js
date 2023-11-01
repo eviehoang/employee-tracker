@@ -81,7 +81,7 @@ const choices = function () {
             case "Update Employee Role":
                 return await updateEmp();
             case "Quit":
-                return end();
+                return db.end();
                 break;
         }
     })
@@ -111,8 +111,8 @@ const back = function () {
         .then(response => {
             if (response.options === "Back") {
                 choices();
-            } else if (response.options === "Quit") {
-                db.end;
+            } else {
+                return db.end();
             }
         })
         .catch(err => {
@@ -216,10 +216,109 @@ async function addEmp() {
 }
 
 
+
+
 // Update Employee Role
-async function updateEmp() {
-    
+async function getEmployees() {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT emp_id, first_name, last_name FROM company_db.employees;', (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(results);
+            }
+        });
+    });
 }
+async function getRoles() {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT id, title FROM company_db.roles;', (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+async function updateEmployeeRole(employeeId, newRoleId) {
+    return new Promise((resolve, reject) => {
+        db.query(
+            'UPDATE company_db.employees SET role_id = ? WHERE emp_id = ?',
+            [newRoleId, employeeId],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}    
+
+async function updateEmp() {
+    try {
+        // Get a list of employees and roles from the database
+        const employees = await getEmployees()
+        const roles = await getRoles(); // Implement this function
+
+        // Create choices for Inquirer prompts
+        const employeeChoices = employees.map(({ emp_id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: emp_id,
+        }));
+
+        const roleChoices = roles.map(({ id, title }) => ({
+            name: title,
+            value: id,
+        }));
+
+        // Prompt the user to select an employee and a new role
+        const updateData = await inquirer.prompt([
+            {
+                type: "list",
+                name: "employeeId",
+                message: "Select the employee to update:",
+                choices: employeeChoices,
+            },
+            {
+                type: "list",
+                name: "newRoleId",
+                message: "Select the new role for the employee:",
+                choices: roleChoices,
+            },
+        ]);
+
+        // Update the employee's role in the database
+        async function updateEmployeeRole(employeeId, newRoleId) {
+            return new Promise((resolve, reject) => {
+                db.query(
+                    'UPDATE company_db.employees SET role_id = ? WHERE emp_id = ?',
+                    [newRoleId, employeeId],
+                    (err, results) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(results);
+                        }
+                    }
+                );
+            });
+        }            
+        await updateEmployeeRole(updateData.employeeId, updateData.newRoleId); 
+
+        console.log("\n Employee role updated successfully. \n");
+        viewEmp();
+
+    } catch (error) {
+        console.error("An error occurred:", error);
+        // Handle errors as needed
+    }
+}
+
+
+
 
 // Launching Everything
 async function start() {
