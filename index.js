@@ -62,8 +62,9 @@ function shark() {
 const choices = function () {
     inquirer.prompt(prompts.menu).catch(err => {
         console.log(err);
-    }).then(response => {
+    }).then(async response => {
         let choice = response.options;
+        console.log(choice);
         switch (choice) {
             case "View All Departments":
                 return viewDept();
@@ -71,14 +72,14 @@ const choices = function () {
                 return viewRoles();
             case "View All Employees":
                 return viewEmp();
-            case "Add Department":
-                return addDept();
+            case "Add Departments":
+                return await addDept();
             case "Add Role":
-                return addRole();
+                return await addRole();
             case "Add Employee":
-                return addEmp();
+                return await addEmp();
             case "Update Employee Role":
-                return updateEmp();
+                return await updateEmp();
             case "Quit":
                 return end();
                 break;
@@ -88,8 +89,6 @@ const choices = function () {
             console.log(err);
         });
 };
-
-
 
 
 // Back to menu and exit options
@@ -134,7 +133,7 @@ function viewDept() {
     });
 }
 function viewRoles() {
-    db.query('SELECT id, title, salary, department_id FROM company_db.roles;', function (err, results) {
+    db.query('SELECT title, salary, department_id FROM company_db.roles;', function (err, results) {
         if (err) {
             console.error(err);
         } else {
@@ -144,7 +143,7 @@ function viewRoles() {
     });
 }
 function viewEmp() {
-    db.query('SELECT first_name, last_name, role_id, manager_id FROM company_db.employees;', function (err, results) {
+    db.query('SELECT emp_id, first_name, last_name, role_id, manager_id FROM company_db.employees;', function (err, results) {
         if (err) {
             console.error(err);
         } else {
@@ -156,14 +155,70 @@ function viewEmp() {
 
 // Add Dept, Role, or Employee
 async function addDept() {
-    const dept = await inquirer.prompt({
+    const dept = await inquirer.prompt([
+        {
         type: "input",
-        name: "deptName",
+        name: "department_name",
         message: "What is the name of the new department?",
-    });
-    const result = db.query("INSERT INTO company_db.departments SET ?", dept);
-    console.table(result);
-    back();
+    }
+]);
+    await db.promise().query("INSERT INTO company_db.departments SET ?", dept);
+    viewDept();
+}
+
+async function addRole() {
+    const dept = await inquirer.prompt([
+        {
+        type: "input",
+        name: "title",
+        message: "What is the name of the new role?",
+    },
+    {
+        type: "input",
+        name: "salary",
+        message: "What is the salary of the new role?",
+    },
+    {
+        type: "input",
+        name: "department_id",
+        message: "What is the department_id for the role?",
+    }
+]);
+    await db.promise().query("INSERT INTO company_db.roles SET ?", dept);
+    viewRoles();
+}
+
+async function addEmp() {
+    const dept = await inquirer.prompt([
+        {
+        type: "input",
+        name: "first_name",
+        message: "What is the new employee's first name?",
+    },
+    {
+        type: "input",
+        name: "last_name",
+        message: "What is their last name?",
+    },
+    {
+        type: "input",
+        name: "role_id",
+        message: "What is their role's id?",
+    },
+    {
+        type: "input",
+        name: "manager_id",
+        message: "What is their manager's id?",
+    }
+]);
+    await db.promise().query("INSERT INTO company_db.employees SET ?", dept);
+    viewEmp();
+}
+
+
+// Update Employee Role
+async function updateEmp() {
+    
 }
 
 // Launching Everything

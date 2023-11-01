@@ -15,10 +15,10 @@ VALUES
 ("Dolphin", 100000, 4),
 ("Whale", 1000000, 5);
 
-INSERT INTO employees (first_name, last_name, role_id, manager_id)
+INSERT INTO employees (emp_id, first_name, last_name, role_id, manager_id)
 VALUES 
-("Tad", "Poles", 1, 1),
-("Sha", "Arks", 2, 1),
-("Blue", "Wales", 4, null),
-("Doll", "Fins", 3, 1),
-("Shrie", "Imps", 5, null );
+(1, "Tad", "Poles", 1, 1),
+(2, "Sha", "Arks", 2, 1),
+(3, "Blue", "Wales", 4, null),
+(4, "Doll", "Fins", 3, 1),
+(5, "Shrie", "Imps", 5, null );
