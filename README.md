@@ -3,10 +3,10 @@
   
   ![](images/sshot.png)
 
-  <h3 align="center">EMPLOYEE TRACKER/h3>
+  <h3 align="center">EMPLOYEE TRACKER</h3>
 
   <p align="center">
-  The Fish-Sea Company seeks to implement an internal employee and department tracking system. This system is designed to operate within the terminal and is powered by MYSQL2, JavaScript, and Inquirer.
+  The Fish-Sea Company seeks to implement an internal employee and department tracking system. This system is designed to operate within the terminal and is powered by MYSQL2, JavaScript, and Inquirer. The program allows use to view all employees, departments, and roles. It also allows the user to update and/or add departments and employees and roles.
   </p>
 
 </div>
