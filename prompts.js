@@ -16,6 +16,7 @@ const menu = [{
         "Add Role",
         "Add Employee",
         "Update Employee Role",
+        "Delete Employee",
         "Quit",
     ]
 }]

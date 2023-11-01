@@ -80,6 +80,8 @@ const choices = function () {
                 return await addEmp();
             case "Update Employee Role":
                 return await updateEmp();
+            case "Delete Employee":
+                return await deleteEmployeePrompt();
             case "Quit":
                 return db.end();
                 break;
@@ -121,6 +123,9 @@ const back = function () {
 };
 
 
+
+
+
 // View All Dept. Roles, and Employees
 function viewDept() {
     db.query('SELECT department_name FROM company_db.departments;', function (err, results) {
@@ -151,17 +156,20 @@ function viewEmp() {
             back();
         }
     });
-}
+};
+
+
+
 
 // Add Dept, Role, or Employee
 async function addDept() {
     const dept = await inquirer.prompt([
         {
-        type: "input",
-        name: "department_name",
-        message: "What is the name of the new department?",
-    }
-]);
+            type: "input",
+            name: "department_name",
+            message: "What is the name of the new department?",
+        }
+    ]);
     await db.promise().query("INSERT INTO company_db.departments SET ?", dept);
     viewDept();
 }
@@ -169,21 +177,21 @@ async function addDept() {
 async function addRole() {
     const dept = await inquirer.prompt([
         {
-        type: "input",
-        name: "title",
-        message: "What is the name of the new role?",
-    },
-    {
-        type: "input",
-        name: "salary",
-        message: "What is the salary of the new role?",
-    },
-    {
-        type: "input",
-        name: "department_id",
-        message: "What is the department_id for the role?",
-    }
-]);
+            type: "input",
+            name: "title",
+            message: "What is the name of the new role?",
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "What is the salary of the new role?",
+        },
+        {
+            type: "input",
+            name: "department_id",
+            message: "What is the department_id for the role?",
+        }
+    ]);
     await db.promise().query("INSERT INTO company_db.roles SET ?", dept);
     viewRoles();
 }
@@ -191,29 +199,34 @@ async function addRole() {
 async function addEmp() {
     const dept = await inquirer.prompt([
         {
-        type: "input",
-        name: "first_name",
-        message: "What is the new employee's first name?",
-    },
-    {
-        type: "input",
-        name: "last_name",
-        message: "What is their last name?",
-    },
-    {
-        type: "input",
-        name: "role_id",
-        message: "What is their role's id?",
-    },
-    {
-        type: "input",
-        name: "manager_id",
-        message: "What is their manager's id?",
-    }
-]);
+            type: "input",
+            name: "first_name",
+            message: "What is the new employee's first name?",
+        },
+        {
+            type: "input",
+            name: "last_name",
+            message: "What is their last name?",
+        },
+        {
+            type: "input",
+            name: "role_id",
+            message: "What is their role's id?",
+        },
+        {
+            type: "input",
+            name: "manager_id",
+            message: "What is their manager's id?",
+        },
+        {
+            type: "input",
+            name: "emp_id",
+            message: "What is their employee id?",
+        }
+    ]);
     await db.promise().query("INSERT INTO company_db.employees SET ?", dept);
     viewEmp();
-}
+};
 
 
 
@@ -255,13 +268,13 @@ async function updateEmployeeRole(employeeId, newRoleId) {
             }
         );
     });
-}    
+}
 
 async function updateEmp() {
     try {
         // Get a list of employees and roles from the database
         const employees = await getEmployees()
-        const roles = await getRoles(); // Implement this function
+        const roles = await getRoles();
 
         // Create choices for Inquirer prompts
         const employeeChoices = employees.map(({ emp_id, first_name, last_name }) => ({
@@ -305,16 +318,53 @@ async function updateEmp() {
                     }
                 );
             });
-        }            
-        await updateEmployeeRole(updateData.employeeId, updateData.newRoleId); 
+        }
+        await updateEmployeeRole(updateData.employeeId, updateData.newRoleId);
 
         console.log("\n Employee role updated successfully. \n");
         viewEmp();
 
     } catch (error) {
         console.error("An error occurred:", error);
-        // Handle errors as needed
     }
+};
+
+
+// Delete Employee
+// Define the deleteEmployee function
+async function deleteEmployee(employeeId) {
+    return new Promise((resolve, reject) => {
+        db.query('DELETE FROM company_db.employees WHERE emp_id = ?', employeeId, (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+// Add a new function to prompt the user to select an employee for deletion
+async function deleteEmployeePrompt() {
+    const employees = await getEmployees();
+
+    const employeeChoices = employees.map(({ emp_id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: emp_id,
+    }));
+
+    const deleteData = await inquirer.prompt([
+        {
+            type: "list",
+            name: "employeeId",
+            message: "Select the employee to delete:",
+            choices: employeeChoices,
+        },
+    ]);
+
+    await deleteEmployee(deleteData.employeeId);
+    console.log("Employee deleted successfully.");
+    viewEmp();
 }
 
 
